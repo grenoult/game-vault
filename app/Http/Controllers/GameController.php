@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response as ResponseFacade;
 use Illuminate\View\View;
 
 class GameController extends Controller
@@ -75,5 +77,25 @@ class GameController extends Controller
         $game->delete();
 
         return redirect(route('games.index'));
+    }
+
+    public function export(): Response
+    {
+        $games = Game::all();
+
+        // Create CSV content as string
+        $csv = "id,title\n";
+        foreach ($games as $game) {
+            $csv .= "{$game->id},{$game->title}\n";
+        }
+
+        // Set headers for file download
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="games.csv"',
+        ];
+
+        // Return CSV file for download
+        return ResponseFacade::make($csv, 200, $headers);
     }
 }

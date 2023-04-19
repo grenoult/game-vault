@@ -27,6 +27,9 @@ Route::resource('games', GameController::class)
     ->only(['index', 'store', 'destroy'])
     ->middleware(['auth', 'verified']);
 
+Route::get('/games/export', [GameController::class, 'export'])
+    ->middleware(['auth', 'verified'])->name('games.export');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

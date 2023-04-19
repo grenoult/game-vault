@@ -10,6 +10,9 @@
             <x-input-error :messages="$errors->get('title')" class="mt-2" />
             <x-primary-button class="mt-4">Add a {{ __('Game') }}</x-primary-button>
         </form>
+        <a href="{{ route('games.export') }}">
+            <x-primary-button class="mt-4">Export</x-primary-button>
+        </a>
         <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
             @foreach ($games as $game)
                 <div class="p-6 flex space-x-2">
