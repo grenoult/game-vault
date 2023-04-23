@@ -27,7 +27,7 @@ Route::resource('games', GameController::class)
     ->only(['index', 'store', 'destroy'])
     ->middleware(['auth', 'verified']);
 
-Route::get('/games/export', [GameController::class, 'export'])
+Route::get('/games/export/{type}', [GameController::class, 'export'])
     ->middleware(['auth', 'verified'])->name('games.export');
 
 Route::middleware('auth')->group(function () {

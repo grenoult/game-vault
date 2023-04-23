@@ -32,17 +32,17 @@
                 style="min-width:15rem"
             >
                 <li>
-                    <a href="{{ route('games.export') }}" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
+                    <a href="{{ route('games.export', 'csv') }}" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
                         CSV
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
+                    <a href="{{ route('games.export', 'xml') }}" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
                         XML
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
+                    <a href="{{ route('games.export', 'json') }}" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
                         JSON
                     </a>
                 </li>
