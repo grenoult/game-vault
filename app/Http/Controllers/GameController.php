@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response as ResponseFacade;
 use Illuminate\View\View;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GameController extends Controller
 {
@@ -75,5 +78,45 @@ class GameController extends Controller
         $game->delete();
 
         return redirect(route('games.index'));
+    }
+
+    public function export(string $type): Response
+    {
+        $games = Game::all();
+
+        if ($type == 'csv') {
+            // Create CSV content as string
+            $csv = "id,title\n";
+            foreach ($games as $game) {
+                $csv .= "{$game->id},{$game->title}\n";
+            }
+
+            // Set headers for file download
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="games.csv"',
+            ];
+
+            // Return CSV file for download
+            return ResponseFacade::make($csv, 200, $headers);
+        } elseif ($type == 'json') {
+            // Create JSON content as indexed array
+            $json = [];
+            foreach ($games as $game) {
+                $json[] = [
+                    'id' => $game->id,
+                    'title' => $game->title,
+                ];
+            }
+            $headers = [
+                'Content-Type' => 'text/json',
+                'Content-Disposition' => 'attachment; filename="games.json"',
+            ];
+
+            // Return CSV file for download
+            return ResponseFacade::make(json_encode($json), 200, $headers);
+        }
+
+        throw new NotFoundHttpException(sprintf('The format %s is unknown.', $type));
     }
 }

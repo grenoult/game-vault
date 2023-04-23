@@ -10,6 +10,45 @@
             <x-input-error :messages="$errors->get('title')" class="mt-2" />
             <x-primary-button class="mt-4">Add a {{ __('Game') }}</x-primary-button>
         </form>
+
+        <div
+            x-data="{ open: false }"
+            class="relative"
+        >
+            <x-primary-button
+                x-on:click="open = true"
+                class="flex items-center mt-4 focus:bg-gray-400 text-gray-700 focus:text-gray-900 font-semibold rounded focus:outline-none focus:shadow-inner py-2 px-4"
+                type="button"
+            >
+                Export
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"  style="margin-top:3px">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+            </x-primary-button>
+            <ul
+                x-show="open"
+                x-on:click.away="open = false"
+                class="bg-white text-gray-700 rounded shadow-lg absolute py-2 mt-1"
+                style="min-width:15rem"
+            >
+                <li>
+                    <a href="{{ route('games.export', 'csv') }}" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
+                        CSV
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('games.export', 'xml') }}" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
+                        XML
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('games.export', 'json') }}" class="block hover:bg-gray-200 whitespace-no-wrap py-2 px-4">
+                        JSON
+                    </a>
+                </li>
+            </ul>
+        </div>
+
         <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
             @foreach ($games as $game)
                 <div class="p-6 flex space-x-2">
