@@ -99,6 +99,22 @@ class GameController extends Controller
 
             // Return CSV file for download
             return ResponseFacade::make($csv, 200, $headers);
+        } elseif ($type == 'json') {
+            // Create JSON content as indexed array
+            $json = [];
+            foreach ($games as $game) {
+                $json[] = [
+                    'id' => $game->id,
+                    'title' => $game->title,
+                ];
+            }
+            $headers = [
+                'Content-Type' => 'text/json',
+                'Content-Disposition' => 'attachment; filename="games.json"',
+            ];
+
+            // Return CSV file for download
+            return ResponseFacade::make(json_encode($json), 200, $headers);
         }
 
         throw new NotFoundHttpException(sprintf('The format %s is unknown.', $type));
