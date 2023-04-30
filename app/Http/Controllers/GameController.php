@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Services\GameExport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -83,14 +84,9 @@ class GameController extends Controller
     public function export(string $type): Response
     {
         $games = Game::all();
+        $gameExport = new GameExport();
 
         if ($type == 'csv') {
-            // Create CSV content as string
-            $csv = "id,title\n";
-            foreach ($games as $game) {
-                $csv .= "{$game->id},{$game->title}\n";
-            }
-
             // Set headers for file download
             $headers = [
                 'Content-Type' => 'text/csv',
@@ -98,7 +94,7 @@ class GameController extends Controller
             ];
 
             // Return CSV file for download
-            return ResponseFacade::make($csv, 200, $headers);
+            return ResponseFacade::make($gameExport->toCsv($games), 200, $headers);
         } elseif ($type == 'json') {
             // Create JSON content as indexed array
             $json = [];
