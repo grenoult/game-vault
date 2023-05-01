@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Services\GameExport;
+use App\Services\GameExport\GameExportContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -84,6 +85,22 @@ class GameController extends Controller
     public function export(string $type): Response
     {
         $games = Game::all();
+
+        if (array_key_exists($type, GameExportContext::STRATEGIES)) {
+            $context = new GameExportContext();
+            $strategy = new (GameExportContext::STRATEGIES[$type]);
+            $context->setStrategy($strategy);
+
+            // Headers could be encapsulated in strategies.
+            $headers = [
+                'Content-Type' => 'text/'.$type,
+                'Content-Disposition' => 'attachment; filename="games.'.$type.'"',
+            ];
+
+            // Return CSV file for download
+            return ResponseFacade::make($context->execute($games), 200, $headers);
+        }
+
         $gameExport = new GameExport();
 
         if ($type == 'csv') {

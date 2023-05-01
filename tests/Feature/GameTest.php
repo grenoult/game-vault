@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Support\Facades\DB;
 use \Tests\TestCase;
+
 class GameTest extends TestCase
 {
     use DatabaseTransactions;
@@ -43,7 +44,10 @@ class GameTest extends TestCase
 
     public function test_games_exported_to_json(): void
     {
-        $expectedResult = '[{"id":1,"title":"Game 1"},{"id":2,"title":"Game 2"},{"id":3,"title":"Game 3"},{"id":4,"title":"Game 4"},{"id":5,"title":"Game 5"},{"id":6,"title":"Game 6"},{"id":7,"title":"Game 7"},{"id":8,"title":"Game 8"},{"id":9,"title":"Game 9"},{"id":10,"title":"Game 10"}]';
+        $expectedResult = '[{"id":1,"title":"Game 1"},{"id":2,"title":"Game 2"},{"id":3,"title":"Game 3"},'.
+            '{"id":4,"title":"Game 4"},{"id":5,"title":"Game 5"},{"id":6,"title":"Game 6"},'.
+            '{"id":7,"title":"Game 7"},{"id":8,"title":"Game 8"},{"id":9,"title":"Game 9"},'.
+            '{"id":10,"title":"Game 10"}]';
 
         $response = $this
             ->actingAs($this->user)
