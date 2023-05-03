@@ -4,6 +4,7 @@ namespace App\Services\GameExport;
 
 use App\Services\GameExport\GameExportStrategies\GameExportCsv;
 use App\Services\GameExport\GameExportStrategies\GameExportStrategyInterface;
+use App\Services\GameExport\GameExportStrategies\GameExportXml;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -20,6 +21,7 @@ class GameExportContext
      */
     const STRATEGIES = [
         'csv' => GameExportCsv::class,
+        'xml' => GameExportXml::class,
     ];
 
     /**

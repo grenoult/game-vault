@@ -77,4 +77,58 @@ class GameTest extends TestCase
 
         $response->assertContent($expectedResult);
     }
+
+    public function test_games_exported_to_xml(): void
+    {
+        $expectedResult = '<?xml version="1.0"?>
+<games>
+    <game>
+        <id>1</id>
+        <title>Game 1</title>
+    </game>
+    <game>
+        <id>2</id>
+        <title>Game 2</title>
+    </game>
+    <game>
+        <id>3</id>
+        <title>Game 3</title>
+    </game>
+    <game>
+        <id>4</id>
+        <title>Game 4</title>
+    </game>
+    <game>
+        <id>5</id>
+        <title>Game 5</title>
+    </game>
+    <game>
+        <id>6</id>
+        <title>Game 6</title>
+    </game>
+    <game>
+        <id>7</id>
+        <title>Game 7</title>
+    </game>
+    <game>
+        <id>8</id>
+        <title>Game 8</title>
+    </game>
+    <game>
+        <id>9</id>
+        <title>Game 9</title>
+    </game>
+    <game>
+        <id>10</id>
+        <title>Game 10</title>
+    </game>
+</games>
+';
+
+        $response = $this
+            ->actingAs($this->user)
+            ->get('/games/export/xml');
+
+        $response->assertContent($expectedResult);
+    }
 }
