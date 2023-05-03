@@ -8,15 +8,15 @@ class GameExportXml implements GameExportStrategyInterface
 {
     public function format(Collection|array $games): string
     {
-        $xml = "<?xml version=\"1.0\"?>\n";
-        $xml .= "<games>\n";
+        $xml = "<?xml version=\"1.0\"?>";
+        $xml .= "<games>";
         foreach ($games as $game) {
-            $xml .= "    <game>\n";
-            $xml .= "        <id>$game->id</id>\n";
-            $xml .= "        <title>$game->title</title>\n";
-            $xml .= "    </game>\n";
+            $xml .= "<game>";
+            $xml .= "<id>$game->id</id>";
+            $xml .= "<title>$game->title</title>";
+            $xml .= "</game>";
         }
-        $xml .= "</games>\n";
+        $xml .= "</games>";
         return $xml;
     }
 }

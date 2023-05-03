@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use App\Services\GameExport;
 use App\Services\GameExport\GameExportContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
@@ -85,43 +84,24 @@ class GameController extends Controller
     public function export(string $type): Response
     {
         $games = Game::all();
+        $context = new GameExportContext();
 
-        if (array_key_exists($type, GameExportContext::STRATEGIES)) {
-            $context = new GameExportContext();
-            $strategy = new (GameExportContext::STRATEGIES[$type]);
-            $context->setStrategy($strategy);
+        $concreteStrategyClassname = $context->loadStrategyByName($type);
 
-            // Headers could be encapsulated in strategies.
-            $headers = [
-                'Content-Type' => 'text/'.$type,
-                'Content-Disposition' => 'attachment; filename="games.'.$type.'"',
-            ];
-
-            // Return CSV file for download
-            return ResponseFacade::make($context->execute($games), 200, $headers);
+        if ($concreteStrategyClassname === null) {
+            throw new NotFoundHttpException(sprintf('The format %s is unknown.', $type));
         }
 
-        $gameExport = new GameExport();
+        $strategy = new $concreteStrategyClassname;
+        $context->setStrategy($strategy);
 
-        if ($type == 'csv') {
-            // Set headers for file download
-            $headers = [
-                'Content-Type' => 'text/csv',
-                'Content-Disposition' => 'attachment; filename="games.csv"',
-            ];
+        // Headers could be encapsulated in strategies.
+        $headers = [
+            'Content-Type' => 'text/'.$type,
+            'Content-Disposition' => 'attachment; filename="games.'.$type.'"',
+        ];
 
-            // Return CSV file for download
-            return ResponseFacade::make($gameExport->toCsv($games), 200, $headers);
-        } elseif ($type == 'json') {
-            $headers = [
-                'Content-Type' => 'text/json',
-                'Content-Disposition' => 'attachment; filename="games.json"',
-            ];
-
-            // Return CSV file for download
-            return ResponseFacade::make($gameExport->toJson($games), 200, $headers);
-        }
-
-        throw new NotFoundHttpException(sprintf('The format %s is unknown.', $type));
+        // Return CSV file for download
+        return ResponseFacade::make($context->execute($games), 200, $headers);
     }
 }

@@ -2,9 +2,7 @@
 
 namespace App\Services\GameExport;
 
-use App\Services\GameExport\GameExportStrategies\GameExportCsv;
 use App\Services\GameExport\GameExportStrategies\GameExportStrategyInterface;
-use App\Services\GameExport\GameExportStrategies\GameExportXml;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -16,13 +14,20 @@ class GameExportContext
     private GameExportStrategyInterface $strategy;
 
     /**
-     * List of strategies and their concrete class.
-     * Later on, this can be updated to be automatic instead of a key value array.
+     * Get the name of a concrete strategy by name, or null if it doesn't exist.
+     *
+     * @param $name
+     * @return string|null
      */
-    const STRATEGIES = [
-        'csv' => GameExportCsv::class,
-        'xml' => GameExportXml::class,
-    ];
+    public function loadStrategyByName($name): ?string
+    {
+        $className = sprintf(
+            'App\Services\GameExport\GameExportStrategies\GameExport%s',
+            ucfirst(strtolower($name))
+        );
+
+        return class_exists($className) ? $className : null;
+    }
 
     /**
      * @param GameExportStrategyInterface $strategy

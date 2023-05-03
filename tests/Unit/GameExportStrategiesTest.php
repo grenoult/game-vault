@@ -2,12 +2,14 @@
 
 namespace Tests\Unit;
 
-use \App\Services\GameExport;
-use \App\Models\Game;
+use App\Models\Game;
+use App\Services\GameExport\GameExportStrategies\GameExportCsv;
+use App\Services\GameExport\GameExportStrategies\GameExportJson;
+use App\Services\GameExport\GameExportStrategies\GameExportXml;
 use PHPUnit\Framework\Attributes\DataProvider;
-use \PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
-class GameExportTest extends TestCase
+class GameExportStrategiesTest extends TestCase
 {
     /**
      * @return Game[]
@@ -58,8 +60,8 @@ class GameExportTest extends TestCase
     #[DataProvider('data_export_to_csv')]
     public function test_export_to_csv($data, $expectedResult): void
     {
-        $exporter = new GameExport();
-        $result = $exporter->toCsv($data);
+        $exporter = new GameExportCsv();
+        $result = $exporter->format($data);
 
         $this->assertEquals($expectedResult, $result);
     }
@@ -87,8 +89,39 @@ class GameExportTest extends TestCase
     #[DataProvider('data_export_to_json')]
     public function test_export_to_json($data, $expectedResult): void
     {
-        $exporter = new GameExport();
-        $result = $exporter->toJson($data);
+        $exporter = new GameExportJson();
+        $result = $exporter->format($data);
+
+        $this->assertEquals($expectedResult, $result);
+    }
+
+    public static function data_export_to_xml(): array
+    {
+        $games = self::create_fixtures();
+
+        return [
+            'Export multiple records' => [
+                $games, // data
+                '<?xml version="1.0"?><games><game><id>1</id><title>Doom</title></game>'.
+                '<game><id>2</id><title>SimCity</title></game><game><id>3</id><title>Oregon Trail Deluxe</title></game>'.
+                '</games>'
+            ],
+            'Export one record' => [
+                [$games[0]], // data
+                '<?xml version="1.0"?><games><game><id>1</id><title>Doom</title></game></games>'
+            ],
+            'Export no record' => [
+                [], // data
+                '<?xml version="1.0"?><games></games>'
+            ],
+        ];
+    }
+
+    #[DataProvider('data_export_to_xml')]
+    public function test_export_to_xml($data, $expectedResult): void
+    {
+        $exporter = new GameExportXml();
+        $result = $exporter->format($data);
 
         $this->assertEquals($expectedResult, $result);
     }
